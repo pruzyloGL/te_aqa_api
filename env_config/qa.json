@@ -1,0 +1,5 @@
+{
+    "API_BASE_URL": "https://qa.api.github.com",
+    "USERNAME":"QA",
+    "PASSWORD":"QA"
+}
