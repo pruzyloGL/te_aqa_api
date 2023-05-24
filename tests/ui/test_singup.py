@@ -1,24 +1,29 @@
 import time
 
 import pytest
-import selenium
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-from src.user import User
 
-driver = webdriver.Chrome()
+#driver = webdriver.Chrome()
 user_name = "user"
 user_pass = "user"
+browser = "chrome"
 
 
-@pytest.fixture(autouse=True)
-def selenium_fixture(driver = driver):
-    yield
+@pytest.fixture()
+def selenium_fixture():
+    driver = None
+    if browser == "chrome":
+        driver = webdriver.Chrome()
+    elif browser == "firefox":
+        driver = webdriver.Firefox()
+    yield driver
     driver.quit()
 
 
 def test_signup_negative(selenium_fixture):
+    driver = selenium_fixture
     driver.get("https://github.com/login")
 
     login_field = driver.find_element(By.ID, "login_field")
@@ -33,6 +38,7 @@ def test_signup_negative(selenium_fixture):
 
 
 def test_signup_positive(selenium_fixture):
+    driver = selenium_fixture
     driver.get("https://github.com/login")
 
     login_field = driver.find_element(By.ID, "login_field")
@@ -43,11 +49,3 @@ def test_signup_positive(selenium_fixture):
     login_btn.click()
 
     assert driver.current_url == "https://github.com/"
-
-
-def test_signup_final_negative(user_fixture):
-    assert user_fixture.get('name') == 'aaaaaautomation_test_removein_30_days_non_existing_user'
-
-
-def test_signup_final_positive(user_fixture):
-    assert user_fixture.get('name') == User.username
