@@ -11,12 +11,14 @@ driver = webdriver.Chrome()
 user_name = "user"
 user_pass = "user"
 
-@pytest.fixture
-def specific_sign_up_user_fixture():
-    yield 42
+
+@pytest.fixture(autouse=True)
+def selenium_fixture(driver = driver):
+    yield
+    driver.quit()
 
 
-def test_signup_negative():
+def test_signup_negative(selenium_fixture):
     driver.get("https://github.com/login")
 
     login_field = driver.find_element(By.ID, "login_field")
@@ -30,7 +32,7 @@ def test_signup_negative():
     assert login_alert.text.__contains__("Incorrect username or password")
 
 
-def test_signup_positive():
+def test_signup_positive(selenium_fixture):
     driver.get("https://github.com/login")
 
     login_field = driver.find_element(By.ID, "login_field")
